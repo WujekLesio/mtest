@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trzybębnowa Maszyna Hazardowa z Punktami, Stawką i Początkową Liczbą Punktów</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin-top: 50px;
+        }
+        .reels {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .reel {
+            font-size: 2em;
+            margin: 0 10px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border: 2px solid #000;
+            border-radius: 5px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 10px;
+        }
+        #score {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        #bet {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trzybębnowa Maszyna Hazardowa</h1>
+    <div class="reels" id="reels">
+        <div class="reel" id="reel1">-</div>
+        <div class="reel" id="reel2">-</div>
+        <div class="reel" id="reel3">-</div>
+    </div>
+    <label for="bet">Stawka (ilość punktów):</label>
+    <input type="number" id="bet" value="1" min="1" max="10">
+    <button class="button" onclick="spinReels()">Zakręć</button>
+    <button class="button" onclick="resetGame()">Resetuj grę</button>
+    <div id="result"></div>
+    <div id="score">Punkty: 100</div>
+
+    <script>
+        let initialScore = 100; // Początkowa ilość punktów
+        let score = initialScore;
+
+        function deductPoint(points) {
+            score -= points; // Odejmowanie punktów za stawkę
+            document.getElementById('score').innerText = "Punkty: " + score;
+        }
+
+        function spinReel() {
+            return Math.floor(Math.random() * 7) + 1; // Losuje liczbę od 1 do 7
+        }
+
+        function spinReels() {
+            const bet = parseInt(document.getElementById('bet').value);
+
+            if (score < bet) {
+                alert("Nie masz wystarczająco punktów!");
+                return;
+            }
+
+            deductPoint(bet); // Odejmuje punkty za stawkę
+
+            const reel1 = spinReel();
+            const reel2 = spinReel();
+            const reel3 = spinReel();
+
+            document.getElementById('reel1').innerText = reel1;
+            document.getElementById('reel2').innerText = reel2;
+            document.getElementById('reel3').innerText = reel3;
+
+            if (reel1 === reel2 && reel1 === reel3) {
+                score += 10 * bet; // Nagroda za 3 identyczne symbole
+                document.getElementById('result').innerText = `Gratulacje! Wygrałeś ${10 * bet} punktów!`;
+            } else if (reel1 === reel2 || reel1 === reel3 || reel2 === reel3) {
+                score += 5 * bet; // Nagroda za 2 identyczne symbole
+                document.getElementById('result').innerText = `Gratulacje! Wygrałeś ${5 * bet} punktów!`;
+            } else {
+                document.getElementById('result').innerText = "Przykro mi, spróbuj ponownie.";
+            }
+
+            document.getElementById('score').innerText = "Punkty: " + score;
+        }
+
+        function resetGame() {
+            score = initialScore; // Przywróć punkty do początkowej wartości
+            document.getElementById('score').innerText = "Punkty: " + score;
+            document.getElementById('result').innerText = ""; // Wyczyść wynik
+            document.getElementById('reel1').innerText = "-";
+            document.getElementById('reel2').innerText = "-";
+            document.getElementById('reel3').innerText = "-";
+        }
+    </script>
+</body>
+</html>
